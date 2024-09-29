@@ -57,12 +57,14 @@ def get_video_comments(youtube, video_id, max_comments=100):
             )
             response = request.execute()
             
+            
+            
             for item in response['items']:
                 comment = item['snippet']['topLevelComment']['snippet']
               
                 comments.append({
                     'author': comment['authorDisplayName'],
-                    'text': comment['textOriginal'],
+                    'text': comment['textOriginal'].replace('\n', '\\n').replace('\r', '\\r'),
                     'date': comment['publishedAt']
                 })
             
@@ -78,31 +80,11 @@ def get_video_comments(youtube, video_id, max_comments=100):
     return comments
 
 
-def write_to_csv(data, filename):
-    console.log(f"[yellow] Writing data to comments.csv")
-
-    # Create a DataFrame from the data
-    df = pd.DataFrame(data, columns=["video_id", "video_title", "video_date", "comment_text", "comment_date"])
-
-    # Check if the file exists
-    try:
-        existing_df = pd.read_csv(filename, error_bad_lines=False)
-        df = pd.concat([existing_df, df], ignore_index=True)
-        header = False  # Don't write header if file already exists
-    except FileNotFoundError:
-        header = True  # Write header if it's a new file
-    except pd.errors.ParserError as e:
-        console.log(f"[red] Error reading {filename}: {e}")
-        header = True  # Write header if there's an error reading the file
-
-    # Write to CSV
-    df.to_csv(filename, mode='a', header=header, index=False)
+def write_to_csv(df, filename):
+   
+    df.to_csv(filename, mode='a', escapechar="\r", index=False, header=False)
     console.log(f"[green] Data written to comments.csv")
 
-
-def pandas_to_csv(data, new_df):
-    with open('comments.csv',  'a', encoding = 'utf=8') as file:
-     new_df.to_csv(file)
 
 def get_data_from_youtube(query, max_video, max_comment):
     console.rule()
@@ -119,21 +101,37 @@ def get_data_from_youtube(query, max_video, max_comment):
         comments = get_video_comments(youtube, video_id, max_comments=max_comment)
         console.log(f"[green] Found {len(comments)} comments")
         for comment in comments:
+            comment_texts = comment['text'].split('\n')
+            comment_modified = " \n ".join(comment_texts)
             youtube_data.append({
                 'video_id': video_id,
                 'video_title': video_title,
                 'video_date': video_date,
-                'comment_text': comment['text'],
+                'comment_text': comment_modified,
                 'comment_date': comment['date']
             })
             # write_to_csv(youtube_data, "comments.csv")
      
         console.log(f"[green] Data collection complete for video: {video_title}")
         console.rule()
-    new_df = pd.DataFrame(youtube_data)
-    pandas_to_csv(youtube_data, new_df)
+
+
+    # from list to dictionary
+    dict_youtube_data = {}
+    for i, data in enumerate(youtube_data):
+        dict_youtube_data[i] = data
+    # from dictionary to dataframe
+    new_df = pd.DataFrame.from_dict(dict_youtube_data, orient='index')
+
+    write_to_csv(new_df, "hasil-scrapping.csv")
     console.rule()
 
 if __name__ == "__main__":
-    query = "Mulyono"
-    get_data_from_youtube(query, 1, 1000)
+    query = "Python programming"
+    get_data_from_youtube(query, 1, 10)
+    # video = search_videos(youtube, query, max_results=1)
+    # video_id = video[0]['id']
+    # comments = get_video_comments(youtube, video_id, max_comments=10)
+    # print(comments)
+
+    
