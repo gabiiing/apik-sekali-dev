@@ -20,7 +20,7 @@ def search_videos(youtube, query, max_results=100):
             q=query,
             part='snippet',
             type='video',
-            maxResults=min(50, max_results - len(videos)),
+            maxResults=max(100, max_results - len(videos)),
             pageToken=next_page_token
         )
         response = request.execute()
@@ -51,7 +51,7 @@ def get_video_comments(youtube, video_id, max_comments=100):
             request = youtube.commentThreads().list(
                 part="snippet",
                 videoId=video_id,
-                maxResults=min(100, max_comments - len(comments)),
+                maxResults=max(100, max_comments - len(comments)),
                 pageToken=next_page_token,
                 textFormat="plainText"
             )
@@ -81,9 +81,13 @@ def get_video_comments(youtube, video_id, max_comments=100):
 
 
 def write_to_csv(df, filename):
+    try:
    
-    df.to_csv(filename, mode='a', escapechar="\r", index=False, header=False)
-    console.log(f"[green] Data written to comments.csv")
+        df.to_csv(filename, mode='a', escapechar="\r", index=False, header=False)
+        console.log(f"[green] Data written to {filename}.csv")
+    except FileNotFoundError:
+        df.to_csv(filename, mode='w', escapechar="\r", index=False)
+        console.log(f"[green] Data written to {filename}.csv")
 
 
 def get_data_from_youtube(query, max_video, max_comment):
@@ -122,13 +126,13 @@ def get_data_from_youtube(query, max_video, max_comment):
         dict_youtube_data[i] = data
     # from dictionary to dataframe
     new_df = pd.DataFrame.from_dict(dict_youtube_data, orient='index')
-
-    write_to_csv(new_df, "hasil-scrapping.csv")
+    csv_filename = "data-" + "-".join(query.split()) + ".csv"
+    write_to_csv(new_df, csv_filename)
     console.rule()
 
 if __name__ == "__main__":
-    query = "Python programming"
-    get_data_from_youtube(query, 1, 10)
+    query = "anak mulyono"
+    get_data_from_youtube(query, 1, 10000000)
     # video = search_videos(youtube, query, max_results=1)
     # video_id = video[0]['id']
     # comments = get_video_comments(youtube, video_id, max_comments=10)
