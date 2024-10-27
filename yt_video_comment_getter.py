@@ -3,6 +3,7 @@ import time
 from googleapiclient.discovery import build
 from rich.console import Console
 from rich.logging import RichHandler
+import sys
 
 api_service_name = "youtube"
 api_version = "v3"
@@ -133,11 +134,11 @@ def get_data_from_youtube(query, max_video, max_comment):
     console.rule()
 
 if __name__ == "__main__":
-    query = "anak mulyono"
-    get_data_from_youtube(query, 1, 10000000)
-    # video = search_videos(youtube, query, max_results=1)
-    # video_id = video[0]['id']
-    # comments = get_video_comments(youtube, video_id, max_comments=10)
-    # print(comments)
+    # Pastikan argumen query diberikan
+    if len(sys.argv) < 2:
+        print("Usage: python3 yt_video_comment_getter.py <query>")
+        sys.exit(1)
 
-    
+    # Ambil query dari argumen command line
+    query = sys.argv[1]
+    get_data_from_youtube(query, 1, 10000000)
