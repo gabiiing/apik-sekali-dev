@@ -7,7 +7,7 @@ import sys
 # YouTube API setup
 api_service_name = "youtube"
 api_version = "v3"
-DEVELOPER_KEY = "AIzaSyDBLX9OgrMQQ_042Zfm4_e-4KvAS5PDl_U"
+DEVELOPER_KEY = "AIzaSyCC8PY7vgYJVcDqzSMqzd7lh8IyRWN-jAE"
 
 console = Console(record=False)
 youtube = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
