@@ -23,6 +23,7 @@ def search_videos(youtube, query, max_results):
             maxResults=min(max_results, 100),
             publishedAfter='2023-09-01T00:00:00Z',
             publishedBefore='2024-05-31T23:59:59Z',
+            order='viewCount',
             pageToken=next_page_token
         )
         response = request.execute()
