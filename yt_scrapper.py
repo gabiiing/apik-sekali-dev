@@ -7,7 +7,7 @@ import sys
 # YouTube API setup
 api_service_name = "youtube"
 api_version = "v3"
-DEVELOPER_KEY = "YOUR_DEVELOPER_KEY_HERE"
+DEVELOPER_KEY = "AIzaSyDBLX9OgrMQQ_042Zfm4_e-4KvAS5PDl_U"
 
 console = Console(record=False)
 youtube = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
@@ -91,6 +91,7 @@ def get_data_from_youtube(query, max_video, max_comment):
     console.log(f"[green] Found {len(videos)} videos")
     
     for video in videos:
+        youtube_data = []
         video_id = video['id']
         video_title = video['title']
         video_date = video['date']
@@ -111,10 +112,9 @@ def get_data_from_youtube(query, max_video, max_comment):
         
         console.log(f"[green] Data collection complete for video: {video_title}")
         console.rule()
-
-    csv_filename = f"data-{query.replace(' ', '_')}.csv"
-    write_to_csv(youtube_data, csv_filename)
-    console.rule()
+        csv_filename = f"data-{query.replace(' ', '_')}.csv"
+        write_to_csv(youtube_data, csv_filename) 
+        console.rule()
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
