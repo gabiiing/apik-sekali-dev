@@ -7,7 +7,7 @@ import sys
 # YouTube API setup
 api_service_name = "youtube"
 api_version = "v3"
-DEVELOPER_KEY = "AIzaSyCC8PY7vgYJVcDqzSMqzd7lh8IyRWN-jAE"
+DEVELOPER_KEY = "AIzaSyBzCdGirVnRwEWIn7QaWzvMzdK6iBmKqg4"
 
 console = Console(record=False)
 youtube = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
@@ -21,6 +21,8 @@ def search_videos(youtube, query, max_results):
             part='snippet',
             type='video',
             maxResults=min(max_results, 100),
+            publishedAfter='2023-09-01T00:00:00Z',
+            publishedBefore='2024-05-31T23:59:59Z',
             pageToken=next_page_token
         )
         response = request.execute()
