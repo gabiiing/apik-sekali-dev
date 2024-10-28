@@ -141,4 +141,4 @@ if __name__ == "__main__":
 
     # Ambil query dari argumen command line
     query = sys.argv[1]
-    get_data_from_youtube(query, 1000000, 100000)
+    get_data_from_youtube(query, 10, 10)
